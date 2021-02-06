@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "chokidar": "^3.5.1",
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^9.1.0",
+    "tedis": "^0.1.12"
   }
 }
