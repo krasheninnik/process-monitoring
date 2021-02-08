@@ -17,7 +17,7 @@ Access Redis from Another Docker Container:
 
 ```
 docker run -it --rm --name test-2-redis --link test-redis:redis -d redis
-sudo docker exec -it test-2-redis sh
+winpty docker exec -it test-2-redis sh
 redis-cli -h redis
 ```
 

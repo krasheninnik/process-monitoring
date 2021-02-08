@@ -2,9 +2,9 @@
   "name": "projects",
   "version": "1.0.0",
   "description": "",
-  "main": "folderWatcher.js",
+  "main": "src/folderWatcher/src/folderWatcher.js",
   "scripts": {
-    "start": "npx tsc && node out_build/folderWatcher.js",
+    "start": "npx tsc && node out_build/folderWatcher/src/folderWatcher.js",
     "start:dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
