@@ -18,7 +18,7 @@ class Observer extends EventEmitter {
       watcher.on("add", async (filePath: string) => {
         if (filePath.includes("to_process.json")) {
           console.log(
-            `[${new Date().toLocaleString()}] ${filePath} has been added.`
+            `[${new Date().toLocaleString()}] ${filePath} has been added`
           );
 
           // Read content of new file
@@ -26,9 +26,10 @@ class Observer extends EventEmitter {
 
           // emit an event when new file has been added
           this.emit("file-added", {
-            message: fileContent.toString(),
+            filePath: filePath,
           });
 
+          /* move functional - keep here for use later )
           const sourceFolderParts = sourceFolder.split("/");
           const sourceFolderName =
             sourceFolderParts[sourceFolderParts.length - 1];
@@ -49,6 +50,7 @@ class Observer extends EventEmitter {
               `[${new Date().toLocaleString()}] ${filePath} has been moved.`
             );
           });
+          */
         }
       });
     } catch (error) {

@@ -2,9 +2,9 @@
   "name": "projects",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "folderWatcher.js",
   "scripts": {
-    "start": "npx tsc && node out_build/server.js",
+    "start": "npx tsc && node out_build/folderWatcher.js",
     "start:dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,8 @@
   "dependencies": {
     "chokidar": "^3.5.1",
     "fs-extra": "^9.1.0",
+    "node-redis": "^0.1.7",
+    "redis": "^3.0.2",
     "tedis": "^0.1.12"
   }
 }
