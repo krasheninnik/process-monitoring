@@ -2,9 +2,10 @@ const redis = require("redis");
 //const redisClientSubscriber = redis.createClient();
 
 const subscriber = redis.createClient();
-const publisher = redis.createClient();
 
 let messageCount = 0;
+
+console.log("Subcribe on alarmchannel:");
 
 subscriber.on("message", function (channel: string, message: string) {
   messageCount += 1;
@@ -20,7 +21,3 @@ subscriber.on("message", function (channel: string, message: string) {
 });
 
 subscriber.subscribe("alarmchannel");
-
-publisher.publish("alarmchannel", "what the fuck is happen there?");
-publisher.publish("alarmchannel", "hello world");
-publisher.publish("alarmchannel", "i dont understand this");

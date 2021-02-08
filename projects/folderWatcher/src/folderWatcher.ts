@@ -11,13 +11,13 @@ var obserser = new Obserser();
 const sourceFolder = "files/to_process";
 const storageFolder = "files/processed";
 
-let x = 0;
+let sequentialFileName = 0;
 
 obserser.on("file-added", (msg: { filePath: string }) => {
   // add filePath in message query
   redisClient.lpush("filenamequery", msg.filePath);
   // send signal, that there new file
-  redisClient.publish("alarmchannel", x++);
+  redisClient.publish("alarmchannel", sequentialFileName++);
   // log:
   console.log(
     `[${new Date().toLocaleString()}] ${
