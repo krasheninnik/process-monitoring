@@ -62,22 +62,40 @@ var Observer = /** @class */ (function (_super) {
             console.log("[" + new Date().toLocaleString() + "] Watching for folder changes on: " + sourceFolder);
             var watcher = chokidar.watch(sourceFolder, { persistent: true });
             watcher.on("add", function (filePath) { return __awaiter(_this, void 0, void 0, function () {
-                var fileContent;
                 return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!filePath.includes("to_process.json")) return [3 /*break*/, 2];
-                            console.log("[" + new Date().toLocaleString() + "] " + filePath + " has been added");
-                            return [4 /*yield*/, fsExtra.readFile(filePath)];
-                        case 1:
-                            fileContent = _a.sent();
-                            // emit an event when new file has been added
-                            this.emit("file-added", {
-                                filePath: filePath,
-                            });
-                            _a.label = 2;
-                        case 2: return [2 /*return*/];
+                    if (filePath.includes("to_process.json")) {
+                        console.log("[" + new Date().toLocaleString() + "] " + filePath + " has been added");
+                        // emit an event when new file has been added
+                        this.emit("file-added", {
+                            filePath: filePath,
+                        });
+                        /* move functional - keep here for use later )
+                        // Read content of new file
+                        var fileContent = await fsExtra.readFile(filePath);
+              
+                        const sourceFolderParts = sourceFolder.split("/");
+                        const sourceFolderName =
+                          sourceFolderParts[sourceFolderParts.length - 1];
+              
+                        const storageFolderParts = storageFolder.split("/");
+                        const storageFolderName =
+                          storageFolderParts[storageFolderParts.length - 1];
+              
+                        const storagedFilePath = filePath.replace(
+                          sourceFolderName,
+                          storageFolderName
+                        );
+              
+                        // move processed file
+                        await fsExtra.move(filePath, storagedFilePath, (err: Error) => {
+                          if (err) return console.error(err);
+                          console.log(
+                            `[${new Date().toLocaleString()}] ${filePath} has been moved.`
+                          );
+                        });
+                        */
                     }
+                    return [2 /*return*/];
                 });
             }); });
         }

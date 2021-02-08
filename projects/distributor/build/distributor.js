@@ -4,17 +4,15 @@ var redis = require("redis");
 var subscriber = redis.createClient();
 var publisher = redis.createClient();
 var messageCount = 0;
-subscriber.on("subscribe", function (channel, count) {
-    publisher.publish("a channel", "a message");
-    publisher.publish("a channel", "another message");
-});
 subscriber.on("message", function (channel, message) {
     messageCount += 1;
     console.log("Subscriber received message in channel '" + channel + "': " + message);
-    if (messageCount === 2) {
+    if (messageCount === 10) {
         subscriber.unsubscribe();
         subscriber.quit();
-        publisher.quit();
     }
 });
-subscriber.subscribe("a channel");
+subscriber.subscribe("alarmchannel");
+publisher.publish("alarmchannel", "what the fuck is happen there?");
+publisher.publish("alarmchannel", "hello world");
+publisher.publish("alarmchannel", "i dont understand this");

@@ -21,15 +21,15 @@ class Observer extends EventEmitter {
             `[${new Date().toLocaleString()}] ${filePath} has been added`
           );
 
-          // Read content of new file
-          var fileContent = await fsExtra.readFile(filePath);
-
           // emit an event when new file has been added
           this.emit("file-added", {
             filePath: filePath,
           });
 
           /* move functional - keep here for use later )
+          // Read content of new file
+          var fileContent = await fsExtra.readFile(filePath);
+
           const sourceFolderParts = sourceFolder.split("/");
           const sourceFolderName =
             sourceFolderParts[sourceFolderParts.length - 1];
