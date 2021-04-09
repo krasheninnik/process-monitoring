@@ -2,28 +2,29 @@
 
 Folder watcher watch for target directory and processing added in the directory files:
 
+- set "await processing" status for file
 - add filename in Redis message query
-- set await status for file
-- send signal for distributor, that there aded a new file
+- send signal for Executor, that there aded a new file
+- send signal with filename for Monitoring
 
-## Distributor
+## Executor
 
 - wait until watcher signaled about new file
 - if there is free threads: start processing in free thread
 - else: wait until thread will free, and then start processing
 
 - while processing file:
-- - send in Redit information about processing file
+- - send in Redis information about processing file
 
 ## Monitoring front
 
 - wait until watcher signaled about new file
-- status of the file processing
+- pull status of the file processing:
 - - `-1` is await for processing
 - - `0...99` processing (%)
 - - `>= 100` done
 
-## Redit help:
+## Redis help:
 
 Run docker with redis:
 
