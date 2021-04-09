@@ -16,6 +16,8 @@ let sequentialFileName = 0;
 obserser.on("file-added", (msg: { filePath: string }) => {
   // add filePath in message query
   redisClient.lpush("filenamequery", msg.filePath);
+  // set await processing status for added file
+  redisClient.set(msg.filePath, -1);
   // send signal, that there new file
   redisClient.publish("alarmchannel", sequentialFileName++);
   // log:
