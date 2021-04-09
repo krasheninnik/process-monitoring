@@ -1324,3 +1324,7 @@ projects/executor/executor/x64/Debug/executor.tlog/link.write.1.tlog
 projects/executor/x64/Debug/executor.exe
 projects/executor/x64/Debug/executor.ilk
 projects/executor/x64/Debug/executor.pdb
+projects/executor/.vs/executor/v16/Browse.VC.db-shm
+projects/executor/.vs/executor/v16/Browse.VC.db-wal
+projects/executor/.vs/executor/v16/Browse.VC.opendb
+projects/executor/.vs/executor/v16/ipch/AutoPCH/ce26f851c3864433/EXECUTOR.ipch
