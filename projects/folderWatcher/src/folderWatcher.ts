@@ -14,12 +14,15 @@ const storageFolder = "files/processed";
 let sequentialFileName = 0;
 
 obserser.on("file-added", (msg: { filePath: string }) => {
-  // add filePath in message query
-  redisClient.lpush("filenamequery", msg.filePath);
   // set await processing status for added file
   redisClient.set(msg.filePath, -1);
+  // add filePath in message queue
+  redisClient.lpush("filenamequeue", msg.filePath);
   // send signal, that there new file
   redisClient.publish("alarmchannel", sequentialFileName++);
+  // send filename to monitoring part:
+  redisClient.publish("monitoringChannel", msg.filePath);
+
   // log:
   console.log(
     `[${new Date().toLocaleString()}] ${

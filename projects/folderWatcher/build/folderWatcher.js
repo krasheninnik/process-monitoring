@@ -12,8 +12,8 @@ var sequentialFileName = 0;
 obserser.on("file-added", function (msg) {
   // set file processing status to "await processing"
   redisClient.set(msg.filePath, -1);
-  // add filePath in message query
-  redisClient.lpush("filenamequery", msg.filePath);
+  // add filePath in message queue
+  redisClient.lpush("filenamequeue", msg.filePath);
   // send signal, that there new file
   redisClient.publish("alarmchannel", sequentialFileName++);
   // send filename to monitoring part:
