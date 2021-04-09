@@ -13,11 +13,32 @@ const ProgressBar = (props) => {
     </div>
   );
 };
+
+class ProcessList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      processPercentages: props.percentages,
+    };
+  }
+
+  render() {
+    const listItems = this.state.processPercentages.map((number) => (
+      <li>
+        <ProgressBar percentage={number} />
+      </li>
+    ));
+    return <ul>{listItems}</ul>;
+  }
+}
+
 class Monitoring extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      processPercentages: [10, 20, 30, 40, 50],
       percentage: 0,
     };
   }
@@ -25,7 +46,14 @@ class Monitoring extends React.Component {
   render() {
     return (
       <div>
-        <ProgressBar percentage={this.state.percentage} />
+        <div>
+          <h1>
+            <ul>Monitoring of execution</ul>
+          </h1>
+        </div>
+        <div>
+          <ProcessList percentages={this.state.processPercentages} />
+        </div>
       </div>
     );
   }
