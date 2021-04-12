@@ -66,6 +66,11 @@ int main(void) {
         });
     std::cout << "client connected to Redis" << std::endl;
 
+    clientPtr->flushall([](const cpp_redis::reply reply) {
+        std::cout << "client FLUSHALL: " << reply << std::endl;
+        });
+    clientPtr->commit();
+
     cpp_redis::subscriber sub;
     std::cout << "attempt to connect subscriber to Redis" << std::endl;
     sub.connect("127.0.0.1", 6379, [](const std::string& host, std::size_t port, cpp_redis::subscriber::connect_state status) {
