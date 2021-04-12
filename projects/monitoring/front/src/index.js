@@ -38,7 +38,7 @@ class Monitoring extends React.Component {
     super(props);
 
     this.state = {
-      filenames: ["It is without web worker"],
+      filesProgress: [],
       processPercentages: [10, 20, 30, 40, 50],
       percentage: 0,
     };
@@ -57,15 +57,18 @@ class Monitoring extends React.Component {
 
     ws.addEventListener("message", ({ data }) => {
       // redirect filename to main thread
-      console.log(`got filename ${data}`);
-      this.setState({ filenames: [...this.state.filenames, data] });
+      this.setState({ filesProgress: JSON.parse(data) });
     });
   }
 
   render() {
-    const filenamesList = this.state.filenames.map((filename) => (
-      <li>{filename}</li>
-    ));
+    const progressInformationList = this.state.filesProgress.map(
+      ({ filename, progress }) => (
+        <li>
+          filename {filename}: {progress}
+        </li>
+      )
+    );
 
     return (
       <div>
@@ -74,7 +77,7 @@ class Monitoring extends React.Component {
             <ul>Monitoring of execution</ul>
           </h1>
         </div>
-        <ul>{filenamesList}</ul>
+        <ul>{progressInformationList}</ul>
         <div>
           <ProcessList percentages={this.state.processPercentages} />
         </div>

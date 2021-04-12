@@ -20,8 +20,8 @@ obserser.on("file-added", (msg: { filePath: string }) => {
   redisClient.lpush("filenamequeue", msg.filePath);
   // send signal, that there new file
   redisClient.publish("alarmchannel", sequentialFileName++);
-  // send filename to monitoring part:
-  redisClient.publish("monitoringChannel", msg.filePath);
+  // save processing filename in the fileSet:
+  redisClient.sadd("fileSet", msg.filePath);
 
   // log:
   console.log(
