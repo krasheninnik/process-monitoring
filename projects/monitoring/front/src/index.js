@@ -43,6 +43,7 @@ class Monitoring extends React.Component {
       percentage: 0,
     };
 
+    /*
     console.log("in main");
     this.state.worker = new FilenameListenerWorker();
     console.log(this.state.worker);
@@ -51,6 +52,14 @@ class Monitoring extends React.Component {
       this.setState({ filenames: [...this.state.filenames, e.data] });
     };
     console.log("worker started");
+    */
+    const ws = new WebSocket("ws://localhost:3001");
+
+    ws.addEventListener("message", ({ data }) => {
+      // redirect filename to main thread
+      console.log(`got filename ${data}`);
+      this.setState({ filenames: [...this.state.filenames, data] });
+    });
   }
 
   render() {
