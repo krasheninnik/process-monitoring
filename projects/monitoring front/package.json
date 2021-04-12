@@ -13,6 +13,7 @@
     "react-native-paper": "^4.7.2",
     "react-native-progress": "^4.1.2",
     "react-scripts": "4.0.2",
+    "redis": "^3.1.0",
     "web-vitals": "^1.1.0"
   },
   "scripts": {

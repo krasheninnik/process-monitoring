@@ -1,4 +1,4 @@
-//import redis from "redis";
+import redis from "redis";
 
 /* eslint-disable-next-line no-restricted-globals */
 self.addEventListener("message", startListening);
@@ -10,7 +10,6 @@ console.log("hello from worker");
 function startListening(event) {
   console.log("filenameListenerWorker.js has been started");
 
-  /*
   const redisClient = redis.createClient();
   redisClient.on("error", function (error) {
     console.error(error);
@@ -24,6 +23,6 @@ function startListening(event) {
     console.log(`got filename ${message}`);
     this.postMessage(message);
   });
-  */
+
   this.postMessage("It is answer from the worker");
 }
