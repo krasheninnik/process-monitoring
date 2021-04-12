@@ -1,6 +1,7 @@
 #pragma once
 #include <cpp_redis/cpp_redis>
 #include <future>
+#include <fstream>
 
 class Executor {
 public:

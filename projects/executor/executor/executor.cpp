@@ -1,5 +1,4 @@
 #include "executor.hpp"
-#include <ppltasks.h>
 
 Executor::Executor(std::unique_ptr<cpp_redis::client> redisClient, int maxConcurrency, std::string alarmChannel):
 	redisClient(std::move(redisClient)), maxConcurrency(maxConcurrency), alarmChannel(alarmChannel) {
@@ -9,10 +8,31 @@ void Executor::processFile(std::string filename) {
 	std::cout << "start processing file(" << currentConcurrency << "): " << filename << std::endl;
 
 	// realy, there need check JSON parser... )0)
-	// until it just 10 second sleep
-	using namespace std::chrono_literals;
-	std::this_thread::sleep_for(10000ms);
+	// until it: just 1 second sleep for each piece of work:
+	int iterations = 0;
+	int progressPercentage = 0;
+	std::string fullFilePath = "..\\..\\folderWatcher\\" + filename;
+	std::cout << fullFilePath << std::endl;
 
+
+	std::ifstream fin(fullFilePath);
+	fin >> iterations;
+
+	for (int i = 0; i < iterations; i++) {
+		// do some hard computation work (yeap, it's it)
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(1000ms);
+		
+		// set in Redis information about progress:
+		char progressPercentageChars[17];
+		progressPercentage = i * 100 / iterations;
+		_itoa(progressPercentage, progressPercentageChars, 10);
+		redisClient->set(filename, std::string(progressPercentageChars));
+		redisClient->commit();
+		std::cout << filename << " progress is: " << progressPercentage << std::endl;
+	}
+	
+	fin.close();
 	std::cout << "end processing filename: " << filename << std::endl;
 	currentConcurrency--;
 
