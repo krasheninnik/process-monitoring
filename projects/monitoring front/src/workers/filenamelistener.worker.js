@@ -1,7 +1,13 @@
 //import redis from "redis";
+
+/* eslint-disable-next-line no-restricted-globals */
+self.addEventListener("message", startListening);
+
 const channelWithFilenames = "monitoringChannel";
 
-this.onmessage = (e) => {
+console.log("hello from worker");
+
+function startListening(event) {
   console.log("filenameListenerWorker.js has been started");
 
   /*
@@ -20,4 +26,4 @@ this.onmessage = (e) => {
   });
   */
   this.postMessage("It is answer from the worker");
-};
+}

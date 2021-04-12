@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import FilenameListenerWorker from "./workers/filenamelistener.worker";
 
 const Filler = (props) => {
   return <div className="filler" style={{ width: `${props.percentage}%` }} />;
@@ -32,7 +33,6 @@ class ProcessList extends React.Component {
     return <ul>{listItems}</ul>;
   }
 }
-
 class Monitoring extends React.Component {
   constructor(props) {
     super(props);
@@ -44,7 +44,7 @@ class Monitoring extends React.Component {
     };
 
     console.log("in main");
-    this.state.worker = new Worker("./workers/filenameListenerWorker.js");
+    this.state.worker = new FilenameListenerWorker();
     console.log(this.state.worker);
     this.state.worker.postMessage("Hello Worker");
     this.state.worker.onmessage = (e) => {
