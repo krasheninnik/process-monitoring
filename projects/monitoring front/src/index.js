@@ -38,12 +38,26 @@ class Monitoring extends React.Component {
     super(props);
 
     this.state = {
+      filenames: ["It is without web worker"],
       processPercentages: [10, 20, 30, 40, 50],
       percentage: 0,
     };
+
+    console.log("in main");
+    this.state.worker = new Worker("./workers/filenameListenerWorker.js");
+    console.log(this.state.worker);
+    this.state.worker.postMessage("Hello Worker");
+    this.state.worker.onmessage = (e) => {
+      this.setState({ filenames: [...this.state.filenames, e.data] });
+    };
+    console.log("worker started");
   }
 
   render() {
+    const filenamesList = this.state.filenames.map((filename) => (
+      <li>{filename}</li>
+    ));
+
     return (
       <div>
         <div>
@@ -51,6 +65,7 @@ class Monitoring extends React.Component {
             <ul>Monitoring of execution</ul>
           </h1>
         </div>
+        <ul>{filenamesList}</ul>
         <div>
           <ProcessList percentages={this.state.processPercentages} />
         </div>
