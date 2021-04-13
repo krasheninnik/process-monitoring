@@ -6,6 +6,8 @@ redisClient.on("error", function (error: any) {
   console.error(error);
 });
 
+redisClient.flushall(() => console.log("redis: flush all"));
+
 var obserser = new Obserser();
 
 const sourceFolder = "files/to_process";
