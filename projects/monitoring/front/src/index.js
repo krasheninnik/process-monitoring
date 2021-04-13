@@ -38,31 +38,58 @@ class Monitoring extends React.Component {
     super(props);
 
     this.state = {
-      filesProgress: [],
+      filesProgress: {
+        enqueued: [],
+        processing: [],
+        completed: [],
+      },
       processPercentages: [10, 20, 30, 40, 50],
       percentage: 0,
     };
 
-    /*
-    console.log("in main");
-    this.state.worker = new FilenameListenerWorker();
-    console.log(this.state.worker);
-    this.state.worker.postMessage("Hello Worker");
-    this.state.worker.onmessage = (e) => {
-      this.setState({ filenames: [...this.state.filenames, e.data] });
-    };
-    console.log("worker started");
-    */
-    const ws = new WebSocket("ws://localhost:3001");
+    const ENQUEUED_STATUS = "-1";
+    const COMPLETED_STATUS = "100";
 
+    const ws = new WebSocket("ws://localhost:3001");
     ws.addEventListener("message", ({ data }) => {
-      // redirect filename to main thread
-      this.setState({ filesProgress: JSON.parse(data) });
+      let enqueued = [];
+      let processing = [];
+      let completed = [];
+      let allReceived = JSON.parse(data);
+      for (let task of allReceived) {
+        if (task.progress === ENQUEUED_STATUS) enqueued.push(task);
+        else if (task.progress == COMPLETED_STATUS) completed.push(task);
+        else processing.push(task);
+      }
+
+      this.setState({
+        filesProgress: {
+          enqueued: enqueued,
+          processing: processing,
+          completed: completed,
+        },
+      });
     });
   }
 
   render() {
-    const progressInformationList = this.state.filesProgress.map(
+    const enqueueTasksList = this.state.filesProgress.enqueued.map(
+      ({ filename, progress }) => (
+        <li>
+          filename {filename}: {progress}
+        </li>
+      )
+    );
+
+    const processingTasksList = this.state.filesProgress.processing.map(
+      ({ filename, progress }) => (
+        <li>
+          filename {filename}: {progress}
+        </li>
+      )
+    );
+
+    const completedTasksList = this.state.filesProgress.completed.map(
       ({ filename, progress }) => (
         <li>
           filename {filename}: {progress}
@@ -77,7 +104,12 @@ class Monitoring extends React.Component {
             <ul>Monitoring of execution</ul>
           </h1>
         </div>
-        <ul>{progressInformationList}</ul>
+        <h2> Enqueued tasks </h2>
+        <ul>{enqueueTasksList}</ul>
+        <h2> Processing tasks </h2>
+        <ul>{processingTasksList}</ul>
+        <h2> Completed tasks </h2>
+        <ul>{completedTasksList}</ul>
         <div>
           <ProcessList percentages={this.state.processPercentages} />
         </div>
