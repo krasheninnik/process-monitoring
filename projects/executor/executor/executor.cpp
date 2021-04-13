@@ -5,7 +5,7 @@ Executor::Executor(std::unique_ptr<cpp_redis::client> redisClient, int maxConcur
 };
 
 void Executor::processFile(std::string filename) {
-	std::cout << "start processing file(" << currentConcurrency << "): " << filename << std::endl;
+	std::cout << "start processing file (now concurrency is " << currentConcurrency << "): " << filename << std::endl;
 
 	// realy, there need check JSON parser... )0)
 	// until it: just 1 second sleep for each piece of work:
@@ -31,10 +31,10 @@ void Executor::processFile(std::string filename) {
 	}
 	// set progress status equal to "100" (completed)
 	redisClient->set(filename, "100");
-	fin.close();
-	std::cout << "end processing filename: " << filename << std::endl;
 	currentConcurrency--;
+	std::cout << "end processing filename (now concurrency is " << currentConcurrency << "):" << filename << std::endl;
 
+	fin.close();
 	// notify client that processing has been end,
 	// for the case if in the filenamequeue still exist files
 	redisClient->publish(alarmChannel, "file processing has been end");
@@ -42,16 +42,19 @@ void Executor::processFile(std::string filename) {
 }
 
 void Executor::processTask() {
+	// this method executed sequentially, so there no race condition between
+	// check maxConcurrency and increment it latter, when filename is obtained
 	if (currentConcurrency == maxConcurrency) {
 		std::cout << "postpone processing: current concurrecny is maximum" << std::endl;
 		return;
 	}
-	currentConcurrency++;
+
 	std::cout << "attempt to get filename from query " << filenamequeue << std::endl;
 	redisClient->rpop(filenamequeue, [this](const cpp_redis::reply reply) {
 		std::cout << "get filename: " << reply << std::endl;
 		if (reply.is_string()) {
 			if (reply.as_string() != "(nil)");
+			this->currentConcurrency++;
 			// start task execution in parallel:
 			std::thread t([this, reply]() {this->processFile(reply.as_string()); });
 			t.detach();				
