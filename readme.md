@@ -1,28 +1,45 @@
+# Process-monitoring
+
+Monitoring process of execution some tasks:
+
+- Watch folder for added new files (TS);
+- Distribute task on available threads and execute (C++);
+- Display information about progress of execution (React).
+
+Integration between services via Redis.
+
 ## Folder watcher
 
-Folder watcher watch for target directory and processing added in the directory files:
+Folder watcher watch for target directory and process added in this directory files:
 
-- set "await processing" status for file
-- add filename in Redis message query
-- send signal for Executor, that there aded a new file
-- send signal with filename for Monitoring
+- set "await processing" status for file;
+- add filename in Redis message query;
+- send signal for Executor, that there added a new file;
+- add filename in set of names (for Monitoring)
 
 ## Executor
 
-- wait until watcher signaled about new file
-- if there is free threads: start processing in free thread
-- else: wait until thread will free, and then start processing
-
+- wait until Watcher signaled about new file, then get file from message query;
+- if Executor have free threads: start processing file;
+- else: wait until any thread will free, then start processing
 - while processing file:
-- - send in Redis information about processing file
+- - send in Redis information about progress in processing
 
-## Monitoring front
+## Monitoring
 
-- wait until watcher signaled about new file
-- pull status of the file processing:
+### Back-end
+
+- poll redis at regular intervals to get all the files in progress and their status
+- send obtained information to Front-end via WebSocket
+
+### Front-end
+
+- Listen WebSocker, show obtained information about task processing in three tasks groups, divided by status:
 - - `-1` is await for processing
 - - `0...99` processing (%)
 - - `>= 100` done
+
+# Some additional information:
 
 ## Redis help:
 
