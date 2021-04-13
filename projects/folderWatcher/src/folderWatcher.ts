@@ -1,22 +1,24 @@
 const Obserser = require("./services/observer");
 const redis = require("redis");
 
+// files location:
+const sourceFolder = "files/to_process";
+const storageFolder = "files/processed";
+
+// create redis client
 const redisClient = redis.createClient();
 redisClient.on("error", function (error: any) {
   console.error(error);
 });
 
+// clear redit:
 redisClient.flushall(() => console.log("redis: flush all"));
 
-var obserser = new Obserser();
-
-const sourceFolder = "files/to_process";
-const storageFolder = "files/processed";
-
+// create folderWatcher on sourceFolder:
 let sequentialFileName = 0;
-
-obserser.on("file-added", (msg: { filePath: string }) => {
-  // set await processing status for added file
+const observer = new Obserser();
+observer.on("file-added", (msg: { filePath: string }) => {
+  // set "await processing" (-1) status for added file
   redisClient.set(msg.filePath, -1);
   // add filePath in message queue
   redisClient.lpush("filenamequeue", msg.filePath);
@@ -25,7 +27,6 @@ obserser.on("file-added", (msg: { filePath: string }) => {
   // save processing filename in the fileSet:
   redisClient.sadd("fileSet", msg.filePath);
 
-  // log:
   console.log(
     `[${new Date().toLocaleString()}] ${
       msg.filePath
@@ -33,4 +34,4 @@ obserser.on("file-added", (msg: { filePath: string }) => {
   );
 });
 
-obserser.watchFolder(sourceFolder, storageFolder);
+observer.watchFolder(sourceFolder, storageFolder);

@@ -1617,3 +1617,6 @@ projects/monitoring/back/node_modules/ws/lib/stream.js
 projects/monitoring/back/node_modules/ws/lib/validation.js
 projects/monitoring/back/node_modules/ws/lib/websocket-server.js
 projects/monitoring/back/node_modules/ws/lib/websocket.js
+projects/executor/enc_temp_folder/8ae35ad452613645aa3f5de917bb22/Source.cpp
+projects/folderWatcher/build/services/observer.js
+projects/monitoring/back/build/server.js

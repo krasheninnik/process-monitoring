@@ -7,19 +7,19 @@ Executor::Executor(std::unique_ptr<cpp_redis::client> redisClient, int maxConcur
 void Executor::processFile(std::string filename) {
 	std::cout << "start processing file (now concurrency is " << currentConcurrency << "): " << filename << std::endl;
 
-	// realy, there need check JSON parser... )0)
+	// TODO: check and add there some JSON parser, but
 	// until it: just 1 second sleep for each piece of work:
 	int iterations = 0;
 	int progressPercentage = 0;
 	std::string fullFilePath = "..\\..\\folderWatcher\\" + filename;
 	std::cout << fullFilePath << std::endl;
 
-
+	// read amount "sleep iterations"
 	std::ifstream fin(fullFilePath);
 	fin >> iterations;
 
 	for (int i = 0; i < iterations; i++) {
-		// do some hard computation work (yeap, it's it)
+		// do some heavy computation work (yeap, it's it)
 		using namespace std::chrono_literals;
 		std::this_thread::sleep_for(1000ms);
 		

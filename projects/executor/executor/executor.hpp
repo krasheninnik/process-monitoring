@@ -7,10 +7,10 @@
 class Executor {
 public:
 	Executor(std::unique_ptr<cpp_redis::client> redisClient, int maxConcurrency, std::string alarmChannel);
-	void processTask();
+	void processTask(); 
 
 private:
-	void processFile(std::string filename);
+	void processFile(std::string filename); 
 	std::unique_ptr<cpp_redis::client> redisClient;
 	int maxConcurrency;
 	std::atomic<int> currentConcurrency = 0;

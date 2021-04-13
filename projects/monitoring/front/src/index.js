@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import FilenameListenerWorker from "./workers/filenamelistener.worker";
+
+const ENQUEUED_TASK_STATUS = "-1";
+const COMPLETED_TASK_STATUS = "100";
 
 const Filler = (props) => {
   return <div className="filler" style={{ width: `${props.percentage}%` }} />;
@@ -9,8 +11,14 @@ const Filler = (props) => {
 
 const ProgressBar = (props) => {
   return (
-    <div className="progress-bar">
-      <Filler percentage={props.percentage} />
+    <div>
+      <div>
+        {props.name}: {props.percentage}
+      </div>
+
+      <div className="progress-bar">
+        <Filler percentage={props.percentage} />
+      </div>
     </div>
   );
 };
@@ -18,21 +26,20 @@ const ProgressBar = (props) => {
 class ProcessList extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      processPercentages: props.percentages,
-    };
   }
 
   render() {
-    const listItems = this.state.processPercentages.map((number) => (
-      <li>
-        <ProgressBar percentage={number} />
-      </li>
-    ));
-    return <ul>{listItems}</ul>;
+    const progressBarsList = this.props.progressList.map(
+      ({ filename, progress }) => (
+        <div>
+          <ProgressBar name={filename} percentage={progress} />
+        </div>
+      )
+    );
+    return <div>{progressBarsList}</div>;
   }
 }
+
 class Monitoring extends React.Component {
   constructor(props) {
     super(props);
@@ -43,25 +50,25 @@ class Monitoring extends React.Component {
         processing: [],
         completed: [],
       },
-      processPercentages: [10, 20, 30, 40, 50],
-      percentage: 0,
     };
 
-    const ENQUEUED_STATUS = "-1";
-    const COMPLETED_STATUS = "100";
-
+    // connect to WebSocket to receive processes updating information
     const ws = new WebSocket("ws://localhost:3001");
     ws.addEventListener("message", ({ data }) => {
+      let allReceivedTasks = JSON.parse(data);
+
+      // distribute task by its progress status:
       let enqueued = [];
       let processing = [];
       let completed = [];
-      let allReceived = JSON.parse(data);
-      for (let task of allReceived) {
-        if (task.progress === ENQUEUED_STATUS) enqueued.push(task);
-        else if (task.progress == COMPLETED_STATUS) completed.push(task);
+
+      for (let task of allReceivedTasks) {
+        if (task.progress === ENQUEUED_TASK_STATUS) enqueued.push(task);
+        else if (task.progress == COMPLETED_TASK_STATUS) completed.push(task);
         else processing.push(task);
       }
 
+      // update state
       this.setState({
         filesProgress: {
           enqueued: enqueued,
@@ -73,30 +80,6 @@ class Monitoring extends React.Component {
   }
 
   render() {
-    const enqueueTasksList = this.state.filesProgress.enqueued.map(
-      ({ filename, progress }) => (
-        <li>
-          filename {filename}: {progress}
-        </li>
-      )
-    );
-
-    const processingTasksList = this.state.filesProgress.processing.map(
-      ({ filename, progress }) => (
-        <li>
-          filename {filename}: {progress}
-        </li>
-      )
-    );
-
-    const completedTasksList = this.state.filesProgress.completed.map(
-      ({ filename, progress }) => (
-        <li>
-          filename {filename}: {progress}
-        </li>
-      )
-    );
-
     return (
       <div>
         <div>
@@ -105,14 +88,11 @@ class Monitoring extends React.Component {
           </h1>
         </div>
         <h2> Enqueued tasks </h2>
-        <ul>{enqueueTasksList}</ul>
+        <ProcessList progressList={this.state.filesProgress.enqueued} />
         <h2> Processing tasks </h2>
-        <ul>{processingTasksList}</ul>
+        <ProcessList progressList={this.state.filesProgress.processing} />
         <h2> Completed tasks </h2>
-        <ul>{completedTasksList}</ul>
-        <div>
-          <ProcessList percentages={this.state.processPercentages} />
-        </div>
+        <ProcessList progressList={this.state.filesProgress.completed} />
       </div>
     );
   }

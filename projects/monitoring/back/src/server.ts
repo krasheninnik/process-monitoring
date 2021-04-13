@@ -6,9 +6,9 @@ interface ProgressInformation {
   progress: string;
 }
 
-// once in the checking time interval get information about
-// progress in file processing
-const checkingTimeInterval = 1000;
+// once in the checking time interval get information
+// about progress in file processing
+const CHECKING_TIME_INTERVAL = 1000;
 
 console.log("Start server");
 const wss = new ws.Server({ port: 3001 });
@@ -41,5 +41,5 @@ wss.on("connection", (ws: any) => {
         });
       }
     });
-  }, checkingTimeInterval);
+  }, CHECKING_TIME_INTERVAL);
 });

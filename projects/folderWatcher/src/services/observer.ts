@@ -1,6 +1,5 @@
 const chokidar = require("chokidar");
 const EventEmitter = require("events").EventEmitter;
-const fsExtra = require("fs-extra");
 
 class Observer extends EventEmitter {
   constructor() {
@@ -25,32 +24,6 @@ class Observer extends EventEmitter {
           this.emit("file-added", {
             filePath: filePath,
           });
-
-          /* move functional - keep here for use later )
-          // Read content of new file
-          var fileContent = await fsExtra.readFile(filePath);
-
-          const sourceFolderParts = sourceFolder.split("/");
-          const sourceFolderName =
-            sourceFolderParts[sourceFolderParts.length - 1];
-
-          const storageFolderParts = storageFolder.split("/");
-          const storageFolderName =
-            storageFolderParts[storageFolderParts.length - 1];
-
-          const storagedFilePath = filePath.replace(
-            sourceFolderName,
-            storageFolderName
-          );
-
-          // move processed file
-          await fsExtra.move(filePath, storagedFilePath, (err: Error) => {
-            if (err) return console.error(err);
-            console.log(
-              `[${new Date().toLocaleString()}] ${filePath} has been moved.`
-            );
-          });
-          */
         }
       });
     } catch (error) {
