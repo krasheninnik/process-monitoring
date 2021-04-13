@@ -24,14 +24,13 @@ void Executor::processFile(std::string filename) {
 		std::this_thread::sleep_for(1000ms);
 		
 		// set in Redis information about progress:
-		char progressPercentageChars[17];
-		progressPercentage = i * 100 / iterations;
-		_itoa(progressPercentage, progressPercentageChars, 10);
-		redisClient->set(filename, std::string(progressPercentageChars));
+		progressPercentage = float(i) * 100 / iterations;
+		redisClient->set(filename, std::to_string(progressPercentage));
 		redisClient->commit();
 		std::cout << filename << " progress is: " << progressPercentage << std::endl;
 	}
-	
+	// set progress status equal to "100" (completed)
+	redisClient->set(filename, "100");
 	fin.close();
 	std::cout << "end processing filename: " << filename << std::endl;
 	currentConcurrency--;

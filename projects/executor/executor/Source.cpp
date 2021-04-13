@@ -62,7 +62,7 @@ int main(void) {
 
     std::cout << "subscriber connected to Redis" << std::endl;
 
-     Executor executor = Executor(std::move(clientPtr), MAX_CONCURRENCY, ALARM_CHANNEL_NAME);
+     Executor executor(std::move(clientPtr), MAX_CONCURRENCY, ALARM_CHANNEL_NAME);
 
     std::cout << "subscribe channel " << ALARM_CHANNEL_NAME << std::endl;
     sub.subscribe(ALARM_CHANNEL_NAME, [&executor](const std::string& chan, const std::string& msg) {
